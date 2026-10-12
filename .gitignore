@@ -1,0 +1,26 @@
+
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+.venv/
+venv/
+
+# Environment variables and secrets
+.env
+.env.*
+!.env.example
+
+# Node.js
+node_modules/
+
+# Vite production build
+dist/
+
+# Local environment files
+.DS_Store
+Thumbs.db
+
+# IDE settings
+.vscode/
+.idea/
