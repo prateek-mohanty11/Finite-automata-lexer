@@ -257,7 +257,7 @@ def t_COMMENT_MULTI(t):
 # ============================================================
 
 def t_PREPROCESSOR(t):
-    r'\#[^\n]*'
+    r'\#include[^\n]*'
     return t
 
 
