@@ -237,66 +237,71 @@ export default function App() {
       </header>
 
       <main className="workspace">
-        <section className="panel editor-panel">
-          <div className="panel-toolbar">
-            <div className="file-tab">
-              <span className="file-dot" />
-              main.c
+        <div className="editor-column">
+          <section className="panel editor-panel">
+            <div className="panel-toolbar">
+              <div className="file-tab">
+                <span className="file-dot" />
+                main.c
+              </div>
+              <div className="actions">
+                <button
+                  type="button"
+                  className="btn primary"
+                  onClick={handleAnalyze}
+                  disabled={analyzing}
+                >
+                  {analyzing ? (
+                    <LoaderCircle size={16} className="spin" />
+                  ) : (
+                    <Play size={16} />
+                  )}
+                  {analyzing ? "Analyzing..." : "Analyze"}
+                </button>
+                <button
+                  type="button"
+                  className="btn"
+                  onClick={handleClear}
+                  disabled={analyzing}
+                >
+                  <Eraser size={16} />
+                  Clear
+                </button>
+              </div>
             </div>
-            <div className="actions">
-              <button
-                type="button"
-                className="btn primary"
-                onClick={handleAnalyze}
-                disabled={analyzing}
-              >
-                {analyzing ? (
-                  <LoaderCircle size={16} className="spin" />
-                ) : (
-                  <Play size={16} />
-                )}
-                {analyzing ? "Analyzing..." : "Analyze"}
-              </button>
-              <button
-                type="button"
-                className="btn"
-                onClick={handleClear}
-                disabled={analyzing}
-              >
-                <Eraser size={16} />
-                Clear
-              </button>
+
+            <div className="editor-wrap">
+              <Editor
+                height="100%"
+                language="c"
+                theme="vs-dark"
+                value={source}
+                onChange={(value) => setSource(value ?? "")}
+                options={{
+                  minimap: { enabled: false },
+                  fontSize: 14,
+                  fontFamily:
+                    "Cascadia Code, Consolas, 'Courier New', monospace",
+                  lineNumbers: "on",
+                  automaticLayout: true,
+                  tabSize: 4,
+                  insertSpaces: true,
+                  autoIndent: "full",
+                  detectIndentation: true,
+                  scrollBeyondLastLine: false,
+                  wordWrap: "off",
+                  scrollbar: {
+                    vertical: "auto",
+                    horizontal: "auto",
+                    alwaysConsumeMouseWheel: false,
+                  },
+                  padding: { top: 12 },
+                  renderLineHighlight: "all",
+                }}
+              />
             </div>
-          </div>
+          </section>
 
-          <div className="editor-wrap">
-            <Editor
-              height="100%"
-              language="c"
-              theme="vs-dark"
-              value={source}
-              onChange={(value) => setSource(value ?? "")}
-              options={{
-                minimap: { enabled: false },
-                fontSize: 14,
-                fontFamily:
-                  "Cascadia Code, Consolas, 'Courier New', monospace",
-                lineNumbers: "on",
-                automaticLayout: true,
-                tabSize: 4,
-                insertSpaces: true,
-                autoIndent: "full",
-                detectIndentation: true,
-                scrollBeyondLastLine: false,
-                wordWrap: "on",
-                padding: { top: 12 },
-                renderLineHighlight: "all",
-              }}
-            />
-          </div>
-        </section>
-
-        <aside className="side-column">
           {stats && (
             <section className="panel stats-panel">
               <div className="panel-toolbar">
@@ -315,25 +320,25 @@ export default function App() {
               </div>
             </section>
           )}
+        </div>
 
-          <section className="panel terminal-panel">
-            <div className="panel-toolbar">
-              <h2>
-                <TerminalSquare size={15} />
-                Terminal
-              </h2>
-              <span className={`run-indicator ${analysisStatus}`}>
-                {analyzing ? "running" : analysisStatus}
-              </span>
-            </div>
-            <pre
-              className={`terminal-output ${analysisStatus}`}
-              aria-live="polite"
-            >
-              {terminal}
-            </pre>
-          </section>
-        </aside>
+        <section className="panel terminal-panel">
+          <div className="panel-toolbar">
+            <h2>
+              <TerminalSquare size={15} />
+              Terminal
+            </h2>
+            <span className={`run-indicator ${analysisStatus}`}>
+              {analyzing ? "running" : analysisStatus}
+            </span>
+          </div>
+          <pre
+            className={`terminal-output ${analysisStatus}`}
+            aria-live="polite"
+          >
+            {terminal}
+          </pre>
+        </section>
       </main>
     </div>
   );
