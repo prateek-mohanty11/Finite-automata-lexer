@@ -265,7 +265,7 @@ def t_PREPROCESSOR(t):
 # IDENTIFIER / KEYWORD
 # ============================================================
 
-def t_ID(t):
+def t_IDENTIFIER(t):
     r'[A-Za-z_][A-Za-z0-9_]*'
 
     if t.value in reserved:
