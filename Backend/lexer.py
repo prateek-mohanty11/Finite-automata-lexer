@@ -53,7 +53,7 @@ reserved = {
 
 tokens = [
     # Identifiers and constants
-    'ID',
+    'IDENTIFIER',
     'INTEGER',
     'FLOATING',
     'CHARACTER',
