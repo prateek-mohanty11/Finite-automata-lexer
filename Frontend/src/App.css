@@ -151,11 +151,21 @@ body {
   min-width: 0;
   min-height: 0;
 }
-
 .editor-column {
   display: flex;
   flex-direction: column;
   gap: var(--workspace-gap);
+}
+
+.viz-section {
+  padding: 0 var(--workspace-gap) var(--workspace-gap);
+  display: flex;
+  justify-content: center;
+}
+
+.viz-section .dfa-visualizer {
+  width: 100%;
+  max-width: 1400px;
 }
 
 .panel {
@@ -375,6 +385,11 @@ body {
 @media (max-width: 767px) {
   .app-header,
   .workspace {
+    padding-left: 12px;
+    padding-right: 12px;
+  }
+
+  .viz-section {
     padding-left: 12px;
     padding-right: 12px;
   }

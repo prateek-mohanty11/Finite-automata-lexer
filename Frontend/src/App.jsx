@@ -8,6 +8,7 @@ import {
   Play,
   TerminalSquare,
 } from "lucide-react";
+import DFAVisualizer from "./DFAVisualizer.jsx";
 
 const API_URL = (import.meta.env.VITE_API_URL || "https://lexilab-backend.onrender.com").replace(
   /\/$/,
@@ -91,12 +92,22 @@ function formatTerminalOutput({ stdout, stderr, error, emptyHint }) {
   return chunks.join("\n");
 }
 
+function hasUsableTrace(trace) {
+  return (
+    trace &&
+    !trace.error &&
+    Array.isArray(trace.steps) &&
+    trace.steps.length > 0
+  );
+}
+
 export default function App() {
   const [source, setSource] = useState(DEFAULT_SOURCE);
   const [terminal, setTerminal] = useState(
     "Ready. Write C source in the editor, then click Analyze."
   );
   const [stats, setStats] = useState(null);
+  const [trace, setTrace] = useState(null);
   const [analyzing, setAnalyzing] = useState(false);
   const [analysisStatus, setAnalysisStatus] = useState("idle");
   const [backendStatus, setBackendStatus] = useState("checking");
@@ -142,6 +153,7 @@ export default function App() {
     setAnalyzing(true);
     setAnalysisStatus("running");
     setStats(null);
+    setTrace(null);
     setTerminal("Running lexical analysis...");
 
     try {
@@ -177,6 +189,7 @@ export default function App() {
       if (response.ok && data.success) {
         setAnalysisStatus("success");
         setBackendStatus("online");
+        setTrace(hasUsableTrace(data.trace) ? data.trace : null);
       } else {
         setAnalysisStatus("error");
         if (response.ok) {
@@ -203,6 +216,7 @@ export default function App() {
 
     setSource("");
     setStats(null);
+    setTrace(null);
     setAnalysisStatus("idle");
     setTerminal("Editor and terminal cleared.");
   }
@@ -340,6 +354,12 @@ export default function App() {
           </pre>
         </section>
       </main>
+
+      {analysisStatus === "success" && trace && (
+        <div className="viz-section">
+          <DFAVisualizer trace={trace} source={source} />
+        </div>
+      )}
     </div>
   );
 }

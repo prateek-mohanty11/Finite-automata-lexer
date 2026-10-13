@@ -11,8 +11,18 @@ from flask_cors import CORS
 BACKEND_DIR = os.path.dirname(os.path.abspath(__file__))
 LEXER_PATH = os.path.join(BACKEND_DIR, "lexer.py")
 
+# Make the sibling dfa_trace module importable no matter the working directory.
+if BACKEND_DIR not in sys.path:
+    sys.path.insert(0, BACKEND_DIR)
+
+try:
+    from dfa_trace import generate_trace as _generate_trace
+except Exception:  # pragma: no cover - trace is an optional enhancement
+    _generate_trace = None
+
 MAX_SOURCE_CHARS = 100_000
 ANALYZE_TIMEOUT_SECONDS = 15
+MAX_TRACE_STEPS = 4000
 
 app = Flask(__name__)
 
@@ -110,12 +120,22 @@ def analyze():
         exit_code = completed.returncode
         success = exit_code == 0
 
+        # Build the educational DFA trace from the same source. This is an
+        # additive enhancement; any failure here must not break /api/analyze.
+        trace = None
+        if _generate_trace is not None:
+            try:
+                trace = _generate_trace(source_code, max_steps=MAX_TRACE_STEPS)
+            except Exception as trace_exc:  # pragma: no cover
+                trace = {"error": f"Trace generation unavailable: {trace_exc}"}
+
         return jsonify(
             {
                 "success": success,
                 "stdout": stdout,
                 "stderr": stderr,
                 "exit_code": exit_code,
+                "trace": trace,
                 "error": None if success else "Lexer process exited with a non-zero status.",
             }
         )
