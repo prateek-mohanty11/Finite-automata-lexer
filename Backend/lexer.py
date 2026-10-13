@@ -421,7 +421,7 @@ def get_category(token_type):
     if token_type in reserved.values():
         return "Keyword"
 
-    if token_type == "ID":
+    if token_type == "IDENTIFIER":
         return "Identifier"
 
     if token_type in {
